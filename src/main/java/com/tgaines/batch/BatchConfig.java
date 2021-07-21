@@ -15,14 +15,11 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
-import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
-import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.LineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -116,25 +112,6 @@ public class BatchConfig {
                 .resource(new ClassPathResource("stocks.txt"))
                 .lineMapper(stockMapper())
                 .build();
-    }
-
-    public ItemWriter<StockPrice> itemWriter() {
-        FlatFileItemWriter<StockPrice> writer = new FlatFileItemWriter<>();
-
-        writer.setResource(new FileSystemResource("output/student_output.csv"));
-        writer.setAppendAllowed(true);
-
-        writer.setLineAggregator(new DelimitedLineAggregator<StockPrice>() {
-            {
-                setDelimiter(";");
-                setFieldExtractor(new BeanWrapperFieldExtractor<StockPrice>() {
-                    {
-                        setNames(new String[] { "symbol", "date", "price" });
-                    }
-                });
-            }
-        });
-        return writer;
     }
 
     private LineMapper<StockPrice> stockMapper() {
