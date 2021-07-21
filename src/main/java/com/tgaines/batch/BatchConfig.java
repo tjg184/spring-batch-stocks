@@ -38,9 +38,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 import javax.sql.DataSource;
 import java.net.MalformedURLException;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 @Configuration
 @EnableBatchProcessing
